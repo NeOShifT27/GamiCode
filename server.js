@@ -40,7 +40,11 @@ app.get('/users/register', (req, res) => {
     res.render('register');
 });
 
-
+app.get('/users/logout', (req, res) => {
+    req.logOut();
+    req.flash('success_msg', 'Vous êtes déconnecté ');
+    res.redirect('/users/login');
+})
 app.get('/users/login', (req, res) => {
     if (req.user !== undefined) {
         res.redirect('/users/dashboard')
