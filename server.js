@@ -7,14 +7,11 @@ const flash = require('express-flash');
 const passport = require('passport');
 const path = require("path");
 
-
 const initializePasseport = require('./passportConfig');
 
 initializePasseport(passport);
 
 const PORT = process.env.PORT || 4000;
-
-app.use('/public', express.static('public'));
 
 app.set('view engine', 'ejs');
 
@@ -137,6 +134,11 @@ app.post('/users/login', passport.authenticate('local', {
     failureRedirect: "/users/login",
     failureFlash: true
 }));
+
+
+//fichiers statiques
+app.use(express.static('public'))
+app.use('/img', express.static(__dirname + 'public/img'))
 
 
 app.listen(PORT, () => {

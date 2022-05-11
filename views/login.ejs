@@ -5,50 +5,50 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
         <title>Login</title>
     </head>
 
     <body>
 
-        <div class="container">
+        <ul>
+            <% if(messages.success_msg) { %>
+                <li>
+                    <%= messages.success_msg %>
+                </li>
+                <% } %>
+        </ul>
 
-            <img src="/img/logo success lab 2.svg">
+        <ul>
+            <% if (messages.error) { %>
+                <li>
+                    <%= messages.error %>
+                </li>
+                <% } %>
+        </ul>
 
-            <ul>
-                <% if(messages.success_msg) { %>
-                    <li>
-                        <%= messages.success_msg %>
-                    </li>
-                    <% } %>
-            </ul>
+        <img src="../img/elementhaut_connexion.png">
+        <img src="../img/logo success lab 2.jpg" class="img_logo">
 
-            <ul>
-                <% if (messages.error) { %>
-                    <li>
-                        <%= messages.error %>
-                    </li>
-                    <% } %>
-            </ul>
+        <form action="/users/login" method="POST">
+            <div class="child">
+                <input type="email" id="email" name="email" placeholder="Adresse Mail" required class="input">
+            </div>
 
-            <form action="/users/login" method="POST">
-                <div class="child">
-                    <input type="email" id="email" name="email" placeholder="Email" required>
-                </div>
+            <div class="child">
+                <input type="password" id="password" name="password" placeholder="Mot de passe" required class="input">
+            </div>
 
-                <div class="child">
-                    <input type="password" id="password" name="password" placeholder="mot de passe" required>
-                </div>
+            <div class="child">
+                <input type="submit" value="Se connecter" />
+            </div>
 
-                <div class="child">
-                    <input type="submit" value="Login" />
-                </div>
+            <div class="child">
+                <a href="/users/register"> Créer un compte</a>
+            </div>
+        </form>
 
-                <div class="child">
-                    <a href="/users/register"> Créer un compte</a>
-                </div>
-            </form>
-        </div>
+        <img src="../img/elementbas_connexion.png" >
+    
 
 
     </body>
@@ -58,19 +58,38 @@
 
 <style scoped>
 
-html, body{
+html{
     height: 100%;
+}
+
+body{
+    height: 90%;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+
 }
 
 
 .child{
-    margin: 0 !important;
     display: flex;
     justify-content: center;
     align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    
+}
+
+.input{
+
+
+}
+
+
+
+.img_logo{
+    height: 15%;
+
 }
 
 </style >
