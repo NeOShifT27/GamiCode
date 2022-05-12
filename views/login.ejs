@@ -34,16 +34,16 @@
                 <input type="email" id="email" name="email" placeholder="Adresse Mail" required class="input">
             </div>
 
-            <div class="child">
+            <div class="child2">
                 <input type="password" id="password" name="password" placeholder="Mot de passe" required class="input">
             </div>
 
             <div class="child">
-                <input type="submit" value="Se connecter" />
+                <input type="submit" id="submit" value="Se connecter" />
             </div>
 
             <div class="child">
-                <a href="/users/register"> Créer un compte</a>
+                <a href="/users/register" id="register_button"> Créer un compte</a>
             </div>
         </form>
 
@@ -72,24 +72,46 @@ body{
 }
 
 
-.child{
+.child, .child2{
     display: flex;
     justify-content: center;
     align-items: center;
     font-family: Arial, Helvetica, sans-serif;
-    
+    padding-bottom: 15px;
+}
+
+.child2{
+    padding-bottom: 30px;
 }
 
 .input{
-
-
+    padding-bottom: 10px;
+    padding-top: 10px;
+    padding-right: 13px;
+    padding-left: 13px;
+    border-radius: 10px;
+    border-color: #316196;
+    border-style:solid;
 }
 
+input::placeholder{
+    color: #316196;
+}
 
+#submit{
+    padding-bottom: 12px;
+    padding-top: 12px;
+    padding-right: 34px;
+    padding-left: 34px;
+    border-radius: 20em;
+    border: none;
+    background-color: #F68916;
+    color: white;
+}
 
 .img_logo{
     height: 15%;
-
+    padding-bottom: 20px;
 }
 
 </style >
