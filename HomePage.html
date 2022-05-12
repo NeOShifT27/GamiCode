@@ -19,15 +19,15 @@
     async function apiGit() {
         console.log('je suis dans la fonction')
         const octokit = new Octokit({
-            auth: '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'
+            auth: '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'
         })
 
         let result = await octokit.request('GET /repos/NeOShifT27/GamiCode/commits', {
             owner: 'NeOShifT27',
             repo: 'GamiCode',
-            encoding: "UTF-8"
         })
-        //console.log(result.data[0].commit.tree.url)
+        console.log(result)
+
         var xmlHttp = null;
         xmlHttp = new XMLHttpRequest();
         xmlHttp.open("GET", result.data[0].commit.tree.url, false);
@@ -35,11 +35,13 @@
         let content = JSON.parse(xmlHttp.responseText);
         var object = null;
         object = new XMLHttpRequest()
-        object.open("GET", content.tree[0].url, false);
+        object.open("GET", content.tree[1].url, false);
         object.send(null);
         let content2 = JSON.parse(object.responseText);
+        let a = content2.content
+        let decodeValue = atob(a)
+        console.log(decodeValue)
 
-        console.log(content2.content)
 
     }
 
