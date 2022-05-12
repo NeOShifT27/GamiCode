@@ -6,12 +6,65 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
-    <title>Document</title>
+    <title>Home</title>
 </head>
 
 <body>
-    <h1>Home</h1>
-    <a href="/users/login">Connexion</a>
+    <div id="container">
+        <div class="button_connexion">
+            <a href="/users/login">Déjà membre? Connectez-vous ici</a>
+        </div>
+        <div class="fond">
+            <img src="../img/logo success lab 2.jpg" class="img_logo">
+            <img src="../img/fond_home2.png" class="img_fond">
+        </div>
+        <div class="inscription">
+            <a href="/users/register">Commencé l'aventure !</a>
+        </div>
+    </div>
 </body>
 
 </html>
+
+<style scoped>
+
+#container2{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.button_connexion{
+    display: flex;
+    justify-content: flex-end;
+    padding-bottom: 25px;
+    padding-top: 25px;
+    padding-right: 50px;
+}
+
+.img_fond{
+    height: 700px;
+    width:1300px;
+}
+
+.img_logo{
+    height:100px;
+    width: 130px;
+    padding-right: 18px;;
+}
+
+.fond{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.inscription{
+    display: flex;
+    justify-content: center;
+}
+
+
+</style>
