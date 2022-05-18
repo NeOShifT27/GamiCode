@@ -11,53 +11,60 @@
 
 
 <body>
+    <header>
+        <div class="home">
+            <a href=".."> 
+                <img src="../img/logohome.PNG" class="img_home">
+            </a>
+        </div>
+    </header>
 
-    <div class="home">
-        <a href="..">Home</a>
+    <div class="corps">
+
+        <ul>
+            <% if (typeof errors !='undefined' ) { %>
+                <% errors.forEach(error=> { %>
+                    <li>
+                        <%= error.message %>
+                    </li>
+                    <% }) %>
+                        <% } %>
+        </ul>
+
+        <img src="../img/elementhaut_connexion.png">
+        <img src="../img/logo success lab 2.jpg" class="img_logo">
+
+
+        <form action="/users/register" method="POST">
+
+            <div class="child">
+                <input type="text" id="name" name="name" placeholder="Nom" required>
+            </div>
+
+            <div class="child">
+                <input type="email" id="email" name="email" placeholder="Adresse Mail" required>
+            </div>
+
+            <div class="child">
+                <input type="password" id="password" name="password" placeholder="Mot de passe" required>
+            </div>
+
+            <div class="child">
+                <input type="password" id="password2" name="password2" placeholder="Confirmer le mot de passe" required>
+            </div>
+
+            <div class="child">
+                <input type="submit" value="Inscription" id="submit"/>
+            </div>
+
+            <div class="child">
+                <a href="/users/login" class="connect"> Se connecter</a>
+            </div>
+        </form>
+
+        <img src="../img/elementbas_connexion.png" >
+
     </div>
-
-    <ul>
-        <% if (typeof errors !='undefined' ) { %>
-            <% errors.forEach(error=> { %>
-                <li>
-                    <%= error.message %>
-                </li>
-                <% }) %>
-                    <% } %>
-    </ul>
-
-    <img src="../img/elementhaut_connexion.png">
-    <img src="../img/logo success lab 2.jpg" class="img_logo">
-
-
-    <form action="/users/register" method="POST">
-
-        <div class="child">
-            <input type="text" id="name" name="name" placeholder="Nom" required>
-        </div>
-
-        <div class="child">
-            <input type="email" id="email" name="email" placeholder="Adresse Mail" required>
-        </div>
-
-        <div class="child">
-            <input type="password" id="password" name="password" placeholder="Mot de passe" required>
-        </div>
-
-        <div class="child">
-            <input type="password" id="password2" name="password2" placeholder="Confirmer le mot de passe" required>
-        </div>
-
-        <div class="child">
-            <input type="submit" value="Inscription" id="submit"/>
-        </div>
-
-        <div class="child">
-            <a href="/users/login"> Se connecter</a>
-        </div>
-    </form>
-
-    <img src="../img/elementbas_connexion.png" >
 
 </body>
 
@@ -73,10 +80,15 @@ html{
 body{
     height: 90%;
     display: flex;
+    flex-direction: column;
+}
+
+.corps{
+    height: 90%;
+    display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-
 }
 
 
@@ -118,5 +130,17 @@ body{
     background-color: #F68916;
     color: white;
 }
+
+.img_home{
+    height: 45px;
+    width: 50px;
+}
+
+.connect{
+    text-decoration: none;
+    color: #316196;
+    font-weight: bold;
+}
+
 
 </style >
