@@ -1,0 +1,2 @@
+# GamiCode
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b292fdbe7af4492c9f1b3340178402ca)](https://app.codacy.com/gh/NeOShifT27/GamiCode?utm_source=github.com&utm_medium=referral&utm_content=NeOShifT27/GamiCode&utm_campaign=Badge_Grade_Settings)
