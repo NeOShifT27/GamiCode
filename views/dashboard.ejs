@@ -5,15 +5,119 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Public+Sans:300,500&display=swap" rel="stylesheet">
 
     <title>Document</title>
 </head>
 
 <body>
     <a href="/users/logout">Déconnexion</a>
-    <h1>Bonjour <%= user.charAt(0).toUpperCase() + user.slice(1) %>
+    <h1 id='title'>Bonjour <%= user.charAt(0).toUpperCase() + user.slice(1) %>
     </h1>
+    <div class="container-fluid mt-3">
+        <!-- jumbotron -->
+        <div class="jumbotron jumbotron-fluid bg-info text-white">
+            <div class="container-fluid">
+                <h1 class="display-5">Github Repositories</h1>
+            </div>
+        </div>
+        <!-- responsive table -->
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr class="table-info">
+                        <th scope="col">ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">URL</th>
+                        <th scope="col">Languages</th>
+                        <th scope="col">Contributors</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 
+                <tr>
+                  <td>...</td>
+                  <td>...</td>
+                  <td>...</td>
+                  <td>...</td>
+                </tr> 
+              -->
+                </tbody>
+            </table>
+            <a href="#" onclick="download_table_as_csv('my_id_table_to_export');">Download as CSV</a>
+
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+
+        let title = document.getElementById('title').innerHTML
+        let name = title.split(' ')[1]
+
+        axios.get('http://localhost:4000/users/dashboard2').then(result => {
+            console.log(result.data)
+
+        })
+
+
+        // xmlHttp = new XMLHttpRequest();
+        // xmlHttp.open("GET", 'http://localhost:4000/users/dashboard', false);
+        // xmlHttp.send(null);
+        // let user = xmlHttp.response;
+        // console.log(user)
+
+        var request = new XMLHttpRequest()
+
+
+
+
+        request.open('GET', `https://api.github.com/users/` + name + `/repos`, true)
+
+        request.onload = function () {
+            var data = JSON.parse(this.response);
+            var xmlHttp = null;
+            xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", data[0].languages_url, false);
+            xmlHttp.send(null);
+            let all_Languages = JSON.parse(xmlHttp.responseText);
+            console.log(all_Languages)
+
+            let a = Object.getOwnPropertyNames(all_Languages)
+
+
+            var xmlHttp = null;
+            xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", data[0].contributors_url, false);
+            xmlHttp.send(null);
+            let content = JSON.parse(xmlHttp.responseText);
+            let contributors = []
+            for (const contributor of content) {
+                contributors.push(contributor.login)
+            }
+
+
+            var statusHTML = '';
+            $.each(data, function (i, status) {
+                statusHTML += '<tr>';
+                statusHTML += '<td>' + status.id + '</td>';
+                statusHTML += '<td>' + status.name + '</td>';
+                statusHTML += '<td>' + status.html_url + '</td>';
+                statusHTML += '<td>' + a + '</td>';
+                statusHTML += '<td>' + contributors + '</td>';
+
+                statusHTML += '</tr>';
+            });
+            $('tbody').html(statusHTML);
+
+        }
+
+        request.send();
+    </script>
 </body>
+
 
 </html>

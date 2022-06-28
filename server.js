@@ -6,14 +6,17 @@ const session = require('express-session');
 const flash = require('express-flash');
 const passport = require('passport');
 const path = require("path");
-
+const axios = require('axios');
+const cors = require('cors');
 const initializePasseport = require('./passportConfig');
-
+const ftch = require('node-fetch');
 initializePasseport(passport);
 
 const PORT = process.env.PORT || 4000;
 
 app.set('view engine', 'ejs');
+
+app.use(cors());
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "./public")));
@@ -33,6 +36,39 @@ app.use(flash());
 app.get('/', (req, res) => {
     res.render('index');
 });
+
+async function getData() {
+
+    const headers = {
+        'Accept': 'application/json',
+        'api-token': 'ncJr9anvrOZMsA8nV0ll'
+
+    };
+
+    // fetch('https://app.codacy.com/api/v3/version',
+    //     {
+    //         method: 'GET',
+
+    //         headers: headers
+    //     })
+    //     .then(function (res) {
+    //         return res.json();
+    //     }).then(function (body) {
+    //         console.log(body);
+    //     });
+}
+
+getData()
+// app.get('/test', async (req, res) => {
+//     try {
+
+
+//         res.send(result.data)
+//     }
+//     catch (error) {
+//         console.log(error)
+//     }
+// });
 
 app.get('/users/register', (req, res) => {
     res.render('register');
@@ -66,6 +102,13 @@ function isreallylogin(req, res, next) {
     }
 }
 
+// app.get('/users/dashboard2', async (req, res) => {
+
+//     let names = await pool.query(
+//         `SELECT * FROM users`)
+//     res.status(200).json(names.rows)
+// })
+
 app.post('/users/register', async (req, res) => {
 
     let { name, email, password, password2 } = req.body;
@@ -94,7 +137,7 @@ app.post('/users/register', async (req, res) => {
     if (errors.length > 0) {
         res.render('register', { errors })
     } else {
-        //sinon s'il s'est bien registré
+        //sinon s'il s'est bien enregistré
 
         let hashedPassword = await bcrypt.hash(password, 10);
         console.log(hashedPassword);
@@ -144,3 +187,4 @@ app.use('/img', express.static(__dirname + 'public/img'))
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+

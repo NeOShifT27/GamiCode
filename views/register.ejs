@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+
 </head>
 
 
@@ -13,10 +14,11 @@
 <body>
     <header>
         <div class="home">
-            <a href=".."> 
+            <a href="..">
                 <img src="../img/logohome.PNG" class="img_home">
             </a>
         </div>
+
     </header>
 
     <div class="corps">
@@ -38,7 +40,7 @@
         <form action="/users/register" method="POST">
 
             <div class="child">
-                <input type="text" id="name" name="name" placeholder="Nom" required>
+                <input type="text" id="name" name="name" placeholder="Gitpseudo" required>
             </div>
 
             <div class="child">
@@ -54,7 +56,7 @@
             </div>
 
             <div class="child">
-                <input type="submit" value="Inscription" id="submit"/>
+                <input type="submit" value="Inscription" id="submit" />
             </div>
 
             <div class="child">
@@ -62,7 +64,7 @@
             </div>
         </form>
 
-        <img src="../img/elementbas_connexion.png" >
+        <img src="../img/elementbas_connexion.png">
 
     </div>
 
@@ -72,75 +74,78 @@
 
 
 <style scoped>
+    html {
+        height: 100%;
+    }
 
-html{
-    height: 100%;
-}
+    body {
+        height: 90%;
+        display: flex;
+        flex-direction: column;
+    }
 
-body{
-    height: 90%;
-    display: flex;
-    flex-direction: column;
-}
-
-.corps{
-    height: 90%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
-
-
-.child{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: Arial, Helvetica, sans-serif;
-    padding-bottom: 20px;
-}
-
-#name, #email, #password, #password2{
-    padding-bottom: 10px;
-    padding-top: 10px;
-    padding-right: 13px;
-    padding-left: 13px;
-    border-radius: 10px;
-    border-color: #316196;
-    border-style:solid;
-}
-
-#name::placeholder, #email::placeholder, #password::placeholder, #password2::placeholder{
-    color: #316196;
-}
+    .corps {
+        height: 90%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
 
 
-.img_logo{
-    height: 15%;
-    padding-bottom: 20px;
-}
+    .child {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial, Helvetica, sans-serif;
+        padding-bottom: 20px;
+    }
 
-#submit{
-    padding-bottom: 12px;
-    padding-top: 12px;
-    padding-right: 34px;
-    padding-left: 34px;
-    border-radius: 20em;
-    border: none;
-    background-color: #F68916;
-    color: white;
-}
+    #name,
+    #email,
+    #password,
+    #password2 {
+        padding-bottom: 10px;
+        padding-top: 10px;
+        padding-right: 13px;
+        padding-left: 13px;
+        border-radius: 10px;
+        border-color: #316196;
+        border-style: solid;
+    }
 
-.img_home{
-    height: 45px;
-    width: 50px;
-}
-
-.connect{
-    text-decoration: none;
-    color: #316196;
-    font-weight: bold;
-}
+    #Gitpseudo::placeholder,
+    #email::placeholder,
+    #password::placeholder,
+    #password2::placeholder {
+        color: #316196;
+    }
 
 
-</style >
+    .img_logo {
+        height: 15%;
+        padding-bottom: 20px;
+    }
+
+    #submit {
+        padding-bottom: 12px;
+        padding-top: 12px;
+        padding-right: 34px;
+        padding-left: 34px;
+        border-radius: 20em;
+        border: none;
+        background-color: #F68916;
+        color: white;
+    }
+
+    .img_home {
+        height: 45px;
+        width: 50px;
+    }
+
+    .connect {
+        text-decoration: none;
+        color: #316196;
+        font-weight: bold;
+    }
+</style>

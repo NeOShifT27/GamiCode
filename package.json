@@ -19,13 +19,17 @@
   },
   "homepage": "https://github.com/NeOShifT27/GamiCode#readme",
   "dependencies": {
+    "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "ejs": "^3.1.7",
     "express": "^4.17.3",
     "express-flash": "0.0.2",
     "express-session": "^1.17.2",
+    "fetch": "^1.1.0",
     "fs": "0.0.1-security",
+    "node-fetch": "^2.6.7",
     "passport": "^0.5.2",
     "passport-local": "^1.0.0",
     "pg": "^8.7.3"
