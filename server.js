@@ -10,6 +10,11 @@ const axios = require('axios');
 const cors = require('cors');
 const initializePasseport = require('./passportConfig');
 const ftch = require('node-fetch');
+var csv = require('csv-parser');
+var fs = require('fs');
+const { Parser } = require('json2csv');
+const { spawn } = require('child_process');
+
 initializePasseport(passport);
 
 const PORT = process.env.PORT || 4000;
@@ -178,6 +183,41 @@ app.post('/users/login', passport.authenticate('local', {
     failureFlash: true
 }));
 
+app.get('/csv', async (req, res) => {
+    let username = req.query.username
+    let projectName = req.query.projectName
+    // call le python de léo
+
+
+    var result;
+    // spawn new child process to call the python script
+    const python = spawn('python', ['./leo_python/get_project_scores.py']);
+    //get_project_scores(projectName, 9000, 'admin', 'Robin2000')
+
+    // collect data from script
+    python.stdout.on('data', function (data) {
+        console.log('Pipe data from python script ...');
+        result = data.toString();
+    });
+
+    // in close event we are sure that stream from child process is closed
+    python.on('close', async (code) => {
+        console.log(`child process close all stdio with code ${code}`);
+        console.log("result : \n", result);
+
+        let fileName = "gamicode.csv"
+
+        // ajout des colonnes
+        await updateCsv(username, "./" + fileName)
+
+        //res.header('Content-Type', 'text/csv');
+        res.attachment(projectName + ".csv");
+        res.sendFile(fileName, {
+            root: path.join(__dirname)
+        });
+    })
+});
+
 
 //fichiers statiques
 app.use(express.static('public'))
@@ -188,3 +228,69 @@ app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
 
+
+async function getProjects(name) {
+    let result = await axios.get(
+        `https://api.github.com/users/` + name + `/repos`
+    );
+
+    return result;
+}
+
+async function updateCsv(username, fileName) {
+
+    let response = await getProjects(username)
+
+    let projects = {};
+
+    let i = 0;
+    for (const iterator of response.data) {
+        let result = await axios.get(iterator.languages_url);
+        projects[iterator.name] = {}
+
+        let getLanguages = Object.getOwnPropertyNames(result.data);
+        projects[iterator.name].languages = getLanguages
+
+        let collaborateur = await axios.get(iterator.contributors_url);
+        let login = [];
+        for (const pseudo of collaborateur.data) {
+            login.push(pseudo.login);
+            login.join("");
+        }
+        projects[iterator.name].contributors = login
+
+        i++;
+
+    }
+    //console.log(projects)
+
+    var newCsv = [];
+
+    return await new Promise((resolve, reject) => {
+        fs.createReadStream(fileName)
+            .pipe(csv())
+            .on('data', function (row) {
+                let projectData = projects[row.Name]
+                if (projectData) {
+                    row.Languages = projectData.languages
+                    row.Contributors = projectData.contributors
+                } else {
+                    row.Languages = []
+                    row.Contributors = []
+                }
+                newCsv.push(row);
+            })
+            .on('end', function () {
+                const json2csvParser = new Parser();
+                const csv = json2csvParser.parse(newCsv);
+                fs.writeFileSync(fileName, csv);
+                resolve(newCsv)
+            })
+    });
+}
+
+
+
+
+
+//updateCsv("Leovicar", "./leo_python/gamicode.csv")

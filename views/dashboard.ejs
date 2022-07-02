@@ -1,14 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link href="https://fonts.googleapis.com/css?family=Public+Sans:300,500&display=swap" rel="stylesheet">
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link href="https://fonts.googleapis.com/css?family=Public+Sans:300,500&display=swap" rel="stylesheet">
-
-    <title>Document</title>
+<title>Document</title>
 </head>
 
 <body>
@@ -24,7 +20,7 @@
         </div>
         <!-- responsive table -->
         <div class="table-responsive">
-            <table class="table table-bordered">
+            <table id="dataTable" class="table table-bordered">
                 <thead>
                     <tr class="table-info">
                         <th scope="col">ID</th>
@@ -32,18 +28,9 @@
                         <th scope="col">URL</th>
                         <th scope="col">Languages</th>
                         <th scope="col">Contributors</th>
-
                     </tr>
                 </thead>
-                <tbody>
-                    <!-- 
-                <tr>
-                  <td>...</td>
-                  <td>...</td>
-                  <td>...</td>
-                  <td>...</td>
-                </tr> 
-              -->
+                <tbody id="tbody">
                 </tbody>
             </table>
             <a href="#" onclick="download_table_as_csv('my_id_table_to_export');">Download as CSV</a>
@@ -58,64 +45,72 @@
         let title = document.getElementById('title').innerHTML
         let name = title.split(' ')[1]
 
-        axios.get('http://localhost:4000/users/dashboard2').then(result => {
-            console.log(result.data)
-
+        axios.get('http://localhost:4000/csv?username=' + name + '&projectName=NutriHealthy').then(result => {
+            console.log("CSV", result.data)
         })
 
 
-        // xmlHttp = new XMLHttpRequest();
-        // xmlHttp.open("GET", 'http://localhost:4000/users/dashboard', false);
-        // xmlHttp.send(null);
-        // let user = xmlHttp.response;
-        // console.log(user)
+        async function getProjects(name) {
+            let result = await axios.get(
+                `https://api.github.com/users/` + name + `/repos`
+            );
 
-        var request = new XMLHttpRequest()
-
-
-
-
-        request.open('GET', `https://api.github.com/users/` + name + `/repos`, true)
-
-        request.onload = function () {
-            var data = JSON.parse(this.response);
-            var xmlHttp = null;
-            xmlHttp = new XMLHttpRequest();
-            xmlHttp.open("GET", data[0].languages_url, false);
-            xmlHttp.send(null);
-            let all_Languages = JSON.parse(xmlHttp.responseText);
-            console.log(all_Languages)
-
-            let a = Object.getOwnPropertyNames(all_Languages)
-
-
-            var xmlHttp = null;
-            xmlHttp = new XMLHttpRequest();
-            xmlHttp.open("GET", data[0].contributors_url, false);
-            xmlHttp.send(null);
-            let content = JSON.parse(xmlHttp.responseText);
-            let contributors = []
-            for (const contributor of content) {
-                contributors.push(contributor.login)
-            }
-
-
-            var statusHTML = '';
-            $.each(data, function (i, status) {
-                statusHTML += '<tr>';
-                statusHTML += '<td>' + status.id + '</td>';
-                statusHTML += '<td>' + status.name + '</td>';
-                statusHTML += '<td>' + status.html_url + '</td>';
-                statusHTML += '<td>' + a + '</td>';
-                statusHTML += '<td>' + contributors + '</td>';
-
-                statusHTML += '</tr>';
-            });
-            $('tbody').html(statusHTML);
-
+            return result;
         }
 
-        request.send();
+        getProjects(name).then(async (response) => {
+
+            let languages = [];
+            let contributors = [];
+
+            let i = 0;
+            for (const iterator of response.data) {
+                let result = await fetch(iterator.languages_url);
+                let l = await result.json();
+
+                let getLanguages = Object.getOwnPropertyNames(l);
+                languages.push(getLanguages);
+
+                let collaborateur = await fetch(iterator.contributors_url);
+                let test = await collaborateur.json();
+                let login = [];
+                for (const pseudo of test) {
+                    login.push(pseudo.login);
+                    login.join("");
+                }
+
+                contributors.push(login);
+
+                const ligne = document.createElement("tr");
+                ligne.setAttribute("id", "test");
+
+                const td = document.createElement("td");
+                td.innerHTML = iterator.id;
+
+                const td2 = document.createElement("td");
+                td2.innerHTML = iterator.name;
+
+                const td3 = document.createElement("td");
+                td3.innerHTML = iterator.html_url;
+
+                const td4 = document.createElement("td");
+                td4.innerHTML = languages[i];
+
+                const td5 = document.createElement("td");
+                td5.innerHTML = contributors[i];
+
+                ligne.appendChild(td);
+                ligne.appendChild(td2);
+                ligne.appendChild(td3);
+                ligne.appendChild(td4);
+                ligne.appendChild(td5);
+
+                const tbody = document.getElementById("tbody");
+                tbody.appendChild(ligne);
+                i++;
+            }
+        })
+
     </script>
 </body>
 

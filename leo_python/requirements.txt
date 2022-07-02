@@ -1,0 +1,4 @@
+selenium
+pandas
+PyDrive
+python-sonarqube-api
