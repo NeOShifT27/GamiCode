@@ -12,6 +12,8 @@ const initializePasseport = require('./passportConfig');
 const ftch = require('node-fetch');
 var csv = require('csv-parser');
 var fs = require('fs');
+const nodemailer = require('nodemailer');
+
 const { Parser } = require('json2csv');
 const { spawn } = require('child_process');
 
@@ -84,6 +86,7 @@ app.get('/users/logout', (req, res) => {
     req.flash('success_msg', 'Vous êtes déconnecté ');
     res.redirect('/users/login');
 })
+
 app.get('/users/login', (req, res) => {
     if (req.user !== undefined) {
         res.redirect('/users/dashboard')
@@ -116,18 +119,20 @@ function isreallylogin(req, res, next) {
 
 app.post('/users/register', async (req, res) => {
 
-    let { name, email, password, password2 } = req.body;
+    let { name, email, localhost, usrsonarqube, password, password2 } = req.body;
 
     console.log({
         name,
         email,
+        localhost,
+        usrsonarqube,
         password,
         password2
     });
 
     let errors = [];
 
-    if (!name || !email || !password || !password2) {
+    if (!name || !email || !localhost || !usrsonarqube || !password || !password2) {
         errors.push({ message: "A renseigner" });
     }
 
@@ -159,9 +164,9 @@ app.post('/users/register', async (req, res) => {
                     res.render('register', { errors });
                 } else {
                     pool.query(
-                        `INSERT INTO users (name, email, password)
-                        VALUES ($1, $2, $3)
-                        RETURNING id, password` , [name, email, hashedPassword],
+                        `INSERT INTO users (name, email, localhost, usrsonarqube, password)
+                        VALUES ($1, $2, $3 , $4, $5)
+                        RETURNING id, password` , [name, email, localhost, usrsonarqube, hashedPassword],
                         (err, results) => {
                             if (err) {
                                 throw err
@@ -288,6 +293,48 @@ async function updateCsv(username, fileName) {
             })
     });
 }
+
+
+// These id's and secrets should come from .env file.
+const CLIENT_ID = '238197358312-hqt8esqfg775uuur56v4l1k2rq32698e.apps.googleusercontent.com';
+const CLEINT_SECRET = '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';
+
+async function sendMail() {
+    try {
+        // const accessToken = await oAuth2Client.getAccessToken();
+
+        const transport = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                type: 'OAuth2',
+                user: 'gamicode.noreply@gmail.com',
+                clientId: CLIENT_ID,
+                clientSecret: CLEINT_SECRET,
+                accessToken: 'ya29.a0ARrdaM_5AZ6-wksytDBl2hWgIPt4PY7bwvWURsRpsbPqhXAWZ1ZTwT5TXaSEh_eVXgMFEaw3x8HFlDiZZwZepq1hDnqjMiHIoE7StDQtff53IerPn9z_qx4SICqIdLBiFgQx2MdwPAXi5QLzrNUB44-FVr72',
+            },
+            tls: {
+                rejectUnauthorized: false
+            }
+        });
+
+        const mailOptions = {
+            from: 'gamicode.noreply@gmail.com',
+            to: 'leo.lebarazer4@gmail.com',
+            subject: 'Projet',
+            text: 'Votre projet a bien été ajouté! Félicitation',
+            html: '<h1>Hello from gmail email using API</h1>',
+        };
+
+        const result = await transport.sendMail(mailOptions);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}
+
+sendMail()
+    .then((result) => console.log('Email sent...', result))
+    .catch((error) => console.log(error.message));
 
 
 
