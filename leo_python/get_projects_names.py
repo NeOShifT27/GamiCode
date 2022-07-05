@@ -1,6 +1,6 @@
 import pandas as pd
 from sonarqube import SonarQubeClient
-
+import sys
 # return la liste des noms et la date d'analyse d'un pj
 
 
@@ -11,10 +11,9 @@ def get_projects_names(port: int, username, password):
     prjs = []
     projects = list(sonar.projects.search_projects())
     for p in projects:
-        print(p)
         prjs.append([p["name"], p["lastAnalysisDate"]])
 
     return prjs
 
 
-#get_projects_names(9000, 'admin', 'Robin2000')
+print(get_projects_names(9000, sys.argv[1], sys.argv[2]), end="")

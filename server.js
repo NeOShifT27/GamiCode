@@ -25,8 +25,9 @@ app.set('view engine', 'ejs');
 
 app.use(cors());
 
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "./public")));
+app.use(express.json())
 
 app.use(
     session({
@@ -193,11 +194,9 @@ app.get('/csv', async (req, res) => {
     let projectName = req.query.projectName
     // call le python de léo
 
-
     var result;
     // spawn new child process to call the python script
-    const python = spawn('python', ['./leo_python/get_project_scores.py']);
-    //get_project_scores(projectName, 9000, 'admin', 'Robin2000')
+    const python = spawn('python', ['./leo_python/get_project_scores.py', projectName]);
 
     // collect data from script
     python.stdout.on('data', function (data) {
@@ -210,16 +209,60 @@ app.get('/csv', async (req, res) => {
         console.log(`child process close all stdio with code ${code}`);
         console.log("result : \n", result);
 
-        let fileName = "gamicode.csv"
+        let fileName = 'gamicode.csv'
 
         // ajout des colonnes
-        await updateCsv(username, "./" + fileName)
+        updateCsv(username, fileName).then(() => {
 
-        //res.header('Content-Type', 'text/csv');
-        res.attachment(projectName + ".csv");
-        res.sendFile(fileName, {
-            root: path.join(__dirname)
+            upload(fileName).catch(e => console.log(e))
+
+            res.attachment(projectName + ".csv");
+            res.sendFile(fileName, {
+                root: path.join(__dirname)
+            });
+        }).catch(e => {
+            console.error("github blocked");
+            upload(fileName).catch(e => console.log(e))
+            res.attachment(projectName + ".csv");
+            res.sendFile(fileName, {
+                root: path.join(__dirname)
+            });
         });
+    })
+});
+
+async function upload(fileName) {
+    var result;
+    const pythonDrive = spawn('python', ['./leo_python/upload_to_drive.py', fileName]);
+    pythonDrive.stdout.on('data', function (data) {
+        console.log('Pipe data from python script ...');
+        result = data.toString();
+    });
+    pythonDrive.on('close', async (code) => {
+        console.log("result drive : \n", result);
+    })
+}
+
+app.get('/projects', (req, res) => {
+    let usernameGitHub = req.query.username
+
+    let name = 'admin';
+    let password = 'Robin2000';
+
+    const python = spawn('python', ['./leo_python/get_projects_names.py', name, password]);
+    var result = "";
+
+    // collect data from script
+    python.stdout.on('data', function (data) {
+        console.log('Pipe data from python script ...');
+        result = data.toString();
+    });
+
+    // in close event we are sure that stream from child process is closed
+    python.on('close', async (code) => {
+        console.log(`child process close all stdio with code ${code}`);
+        console.log("result : \n", result);
+        res.status(200).json(JSON.parse(result.replaceAll("'", "\"")))
     })
 });
 
@@ -263,10 +306,10 @@ async function updateCsv(username, fileName) {
             login.join("");
         }
         projects[iterator.name].contributors = login
-
         i++;
-
     }
+
+
     //console.log(projects)
 
     var newCsv = [];
@@ -277,29 +320,35 @@ async function updateCsv(username, fileName) {
             .on('data', function (row) {
                 let projectData = projects[row.Name]
                 if (projectData) {
-                    row.Languages = projectData.languages
-                    row.Contributors = projectData.contributors
+                    if (projectData.languages)
+                        row.Languages = projectData.languages.join(";")
+                    else
+                        row.Languages = ""
+                    if (projectData.contributors)
+                        row.Contributors = projectData.contributors.join(";")
+                    else
+                        row.Contributors = ""
                 } else {
-                    row.Languages = []
-                    row.Contributors = []
+                    row.Languages = ""
+                    row.Contributors = ""
                 }
                 newCsv.push(row);
             })
             .on('end', function () {
-                const json2csvParser = new Parser();
+                const json2csvParser = new Parser({ quote: '' });
                 const csv = json2csvParser.parse(newCsv);
+                console.log(csv)
                 fs.writeFileSync(fileName, csv);
                 resolve(newCsv)
             })
     });
 }
 
-
 // These id's and secrets should come from .env file.
 const CLIENT_ID = '238197358312-hqt8esqfg775uuur56v4l1k2rq32698e.apps.googleusercontent.com';
 const CLEINT_SECRET = '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';
 
-async function sendMail() {
+async function sendMail(email) {
     try {
         // const accessToken = await oAuth2Client.getAccessToken();
 
@@ -310,7 +359,7 @@ async function sendMail() {
                 user: 'gamicode.noreply@gmail.com',
                 clientId: CLIENT_ID,
                 clientSecret: CLEINT_SECRET,
-                accessToken: 'ya29.a0ARrdaM_5AZ6-wksytDBl2hWgIPt4PY7bwvWURsRpsbPqhXAWZ1ZTwT5TXaSEh_eVXgMFEaw3x8HFlDiZZwZepq1hDnqjMiHIoE7StDQtff53IerPn9z_qx4SICqIdLBiFgQx2MdwPAXi5QLzrNUB44-FVr72',
+                accessToken: 'ya29.a0ARrdaM-V3CLtRdAh5LCwFwhNrRuVDiPBi1yqQfc1QC_8dbbjDR1QwmUnhaKHuOdzlzwtSFiVNjuRuwj1b-CfSetOxHT4DahREC9CnBfIhICwzWqJFennKphGJ0P6pvqNBPzfmJJngT-y9b6CCXu2ngjVI17wfw',
             },
             tls: {
                 rejectUnauthorized: false
@@ -319,7 +368,7 @@ async function sendMail() {
 
         const mailOptions = {
             from: 'gamicode.noreply@gmail.com',
-            to: 'leo.lebarazer4@gmail.com',
+            to: email,
             subject: 'Projet',
             text: 'Votre projet a bien été ajouté! Félicitation',
             html: '<h1>Hello from gmail email using API</h1>',
@@ -332,10 +381,27 @@ async function sendMail() {
     }
 }
 
-sendMail()
-    .then((result) => console.log('Email sent...', result))
-    .catch((error) => console.log(error.message));
+app.post("/email", (req, res) => {
+    let email = req.body.email
+    console.log(req.body)
+    console.log('email:' + email)
+    sendMail(email)
+        .then((result) => console.log('Email sent...', result))
+        .catch((error) => console.log(error.message));
+})
 
+
+app.get('/users', (req, res) => {
+    pool.query(`SELECT * FROM users`, (err, results) => {
+        if (err) {
+            throw err
+        }
+        res.status(200).json(results.rows)
+
+    })
+
+
+})
 
 
 

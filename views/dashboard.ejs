@@ -5,6 +5,11 @@
 <link href="https://fonts.googleapis.com/css?family=Public+Sans:300,500&display=swap" rel="stylesheet">
 
 <title>Document</title>
+<style>
+    #link {
+        cursor: pointer;
+    }
+</style>
 </head>
 
 <body>
@@ -33,7 +38,20 @@
                 <tbody id="tbody">
                 </tbody>
             </table>
-            <a href="#" onclick="download_table_as_csv('my_id_table_to_export');">Download as CSV</a>
+
+        </div>
+
+        <div class="table-responsive">
+            <table id="dataTable2" class="table table-bordered">
+                <thead>
+                    <tr class="table-info">
+                        <th scope="col">Name</th>
+                        <th scope="col">Date</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody2">
+                </tbody>
+            </table>
 
         </div>
     </div>
@@ -43,11 +61,22 @@
     <script>
 
         let title = document.getElementById('title').innerHTML
-        let name = title.split(' ')[1]
+        let name = title.split(' ')[1].replace('\n', '')
+        console.log('"' + name + '"')
 
-        axios.get('http://localhost:4000/csv?username=' + name + '&projectName=NutriHealthy').then(result => {
-            console.log("CSV", result.data)
-        })
+
+
+        /* axios.get('http://localhost:4000/csv?username=' + name + '&projectName=NutriHealthy').then(result => {
+             console.log("CSV", result.data)
+         })*/
+
+        async function getEmailUser(name) {
+            let result = await axios.get('http://localhost:4000/users')
+            for (const user of result.data) {
+                if (name === user.name) return user.email
+            }
+
+        }
 
 
         async function getProjects(name) {
@@ -57,6 +86,57 @@
 
             return result;
         }
+
+        async function getProjectsNames() {
+            let result = await axios.get(`/projects`, {
+                params: {
+                    username: name
+                }
+            });
+
+            return result;
+        }
+
+
+        getProjectsNames().then(res => {
+            for (const project of res.data) {
+                const ligne = document.createElement("tr");
+
+                const td = document.createElement("td");
+                td.innerHTML = project[0];
+                td.setAttribute("id", "link");
+
+                td.onclick = async () => {
+
+                    await axios.get('http://localhost:4000/csv?username=' + name + '&projectName=' + project[0]).then(result => {
+                        console.log("CSV", result.data)
+                    })
+
+                    let result = await axios.get('http://localhost:4000/users')
+                    let user = result.data
+                    user.forEach(element => {
+
+
+                        if (name === element.name) {
+                            axios.post('http://localhost:4000/email', { email: element.email })
+                            return
+                        }
+
+                    });
+
+                }
+
+                const td2 = document.createElement("td");
+                td2.innerHTML = project[1];
+
+                ligne.appendChild(td);
+                ligne.appendChild(td2);
+
+                const tbody = document.getElementById("tbody2");
+                tbody.appendChild(ligne);
+            }
+        })
+
 
         getProjects(name).then(async (response) => {
 
