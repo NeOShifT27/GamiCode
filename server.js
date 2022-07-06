@@ -120,20 +120,18 @@ function isreallylogin(req, res, next) {
 
 app.post('/users/register', async (req, res) => {
 
-    let { name, email, localhost, usrsonarqube, password, password2 } = req.body;
+    let { name, email, password, password2 } = req.body;
 
     console.log({
         name,
         email,
-        localhost,
-        usrsonarqube,
         password,
         password2
     });
 
     let errors = [];
 
-    if (!name || !email || !localhost || !usrsonarqube || !password || !password2) {
+    if (!name || !email || !password || !password2) {
         errors.push({ message: "A renseigner" });
     }
 
@@ -165,9 +163,9 @@ app.post('/users/register', async (req, res) => {
                     res.render('register', { errors });
                 } else {
                     pool.query(
-                        `INSERT INTO users (name, email, localhost, usrsonarqube, password)
-                        VALUES ($1, $2, $3 , $4, $5)
-                        RETURNING id, password` , [name, email, localhost, usrsonarqube, hashedPassword],
+                        `INSERT INTO users (name, email, password)
+                        VALUES ($1, $2, $3)
+                        RETURNING id, password` , [name, email, hashedPassword],
                         (err, results) => {
                             if (err) {
                                 throw err
@@ -359,7 +357,7 @@ async function sendMail(email) {
                 user: 'gamicode.noreply@gmail.com',
                 clientId: CLIENT_ID,
                 clientSecret: CLEINT_SECRET,
-                accessToken: 'ya29.a0ARrdaM-V3CLtRdAh5LCwFwhNrRuVDiPBi1yqQfc1QC_8dbbjDR1QwmUnhaKHuOdzlzwtSFiVNjuRuwj1b-CfSetOxHT4DahREC9CnBfIhICwzWqJFennKphGJ0P6pvqNBPzfmJJngT-y9b6CCXu2ngjVI17wfw',
+                accessToken: 'ya29.a0AVA9y1ukfZ7lx97hfOIhY5Jg-ExvqxYPhIjRVApGZ9_l4nFTlqA1LNImSXz-go7WP_FnrsufwuZoHWMkWn1rqNAkoXQsTrgc4LXEgFKbmTO2EQDvIK0C_4bKq48a_fa9snEF_OSMkhlgqmpO8rPNNuMVBaHH',
             },
             tls: {
                 rejectUnauthorized: false

@@ -1,7 +1,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">-->
 <link href="https://fonts.googleapis.com/css?family=Public+Sans:300,500&display=swap" rel="stylesheet">
 
 <title>Document</title>
@@ -13,14 +13,21 @@
 </head>
 
 <body>
-    <a href="/users/logout">Déconnexion</a>
-    <h1 id='title'>Bonjour <%= user.charAt(0).toUpperCase() + user.slice(1) %>
-    </h1>
+    <div class="header">
+        <div class="conteneur"><a href="/users/logout"><img class="deco_button"
+                    src="../img/logoutlogo-removebg.png"></a></div>
+        <!--<a href="/users/logout" class="deco">Déconnexion</a>-->
+        <h1 id='title'>Bonjour <%= user.charAt(0).toUpperCase() + user.slice(1) %> - Portail Chef de Projet
+        </h1>
+        <img src="../img/logo success lab 2.jpg" class="img_logo">
+    </div>
+
     <div class="container-fluid mt-3">
+
         <!-- jumbotron -->
-        <div class="jumbotron jumbotron-fluid bg-info text-white">
+        <div id="titre_repo" class="jumbotron jumbotron-fluid bg-info text-white">
             <div class="container-fluid">
-                <h1 class="display-5">Github Repositories</h1>
+                <h1 class="display-5">Repertoires Github</h1>
             </div>
         </div>
         <!-- responsive table -->
@@ -39,6 +46,12 @@
                 </tbody>
             </table>
 
+        </div>
+
+        <div id="titre_repo" class="jumbotron jumbotron-fluid bg-info text-white2">
+            <div class="container-fluid">
+                <h1 class="display-5">Projets analysés</h1>
+            </div>
         </div>
 
         <div class="table-responsive">
@@ -196,3 +209,83 @@
 
 
 </html>
+
+
+<style scoped>
+    .header {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: space-around;
+        align-items: center;
+        font-family: sans-serif;
+        padding-bottom: 25px;
+    }
+
+    #title {
+        color: #3d6c9c;
+        font-weight: normal;
+
+    }
+
+    .img_logo {
+        height: 100px;
+        width: 125px;
+    }
+
+    .deco_button {
+        height: 30px;
+        width: 30px;
+    }
+
+    #titre_repo {
+        color: #3d6c9c;
+        font-family: sans-serif;
+        padding-bottom: 0px;
+        padding-top: 35px;
+        font-weight: normal;
+
+    }
+
+    * {
+        font-family: sans-serif;
+    }
+
+    .table-responsive {
+        border-collapse: collapse;
+        margin: 25px 0;
+        font-size: 0.9em;
+        min-width: 400px;
+        border-radius: 20px 20px 20px 20px;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .table-responsive thead tr {
+        background-color: #f48c16;
+        color: #ffffff;
+        text-align: left;
+        font-weight: bold;
+    }
+
+    .table-responsive th,
+    .table-responsive td {
+        padding: 12px 15px;
+    }
+
+    .table-responsive tbody tr {
+        border-bottom: 1px solid #dddddd;
+    }
+
+    .table-responsive tbody tr:nth-of-type(even) {
+        background-color: #f3f3f3;
+    }
+
+    .table-responsive tbody tr:last-of-type {
+        border-bottom: 2px solid #f48c16;
+    }
+
+    .table-responsive tbody tr.active-row {
+        font-weight: bold;
+        color: #009879;
+    }
+</style>

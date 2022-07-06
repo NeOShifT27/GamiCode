@@ -15,7 +15,7 @@ def upload_file_to_googledrive(myfile):
 
     print("uploaded file", 'title: %s, mimeType: %s' %
           (f['title'], f['mimeType']))
-    sleep(100)
+    sleep(50)
     f.Trash()  # Move file to trash.
     f.UnTrash()  # Move file out of trash.
     f.Delete()
