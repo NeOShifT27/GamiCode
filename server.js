@@ -357,7 +357,7 @@ async function sendMail(email) {
                 user: 'gamicode.noreply@gmail.com',
                 clientId: CLIENT_ID,
                 clientSecret: CLEINT_SECRET,
-                accessToken: 'ya29.a0AVA9y1ukfZ7lx97hfOIhY5Jg-ExvqxYPhIjRVApGZ9_l4nFTlqA1LNImSXz-go7WP_FnrsufwuZoHWMkWn1rqNAkoXQsTrgc4LXEgFKbmTO2EQDvIK0C_4bKq48a_fa9snEF_OSMkhlgqmpO8rPNNuMVBaHH',
+                accessToken: 'ya29.a0ARrdaM9pYvqDvJdnWr-fOy4WI3nFHep4glJuAc6lUio7zpsXhBCJrHmdSDd9AApe3VlZWCIyJTlhxtDwHuj5m51GqSnwCbtnIfYhjbyr11CzVR62fluTgY_QN8kQLtdF6v3Dj-pIE38cu-tMJJkT5dg1qeDb',
             },
             tls: {
                 rejectUnauthorized: false
@@ -368,8 +368,8 @@ async function sendMail(email) {
             from: 'gamicode.noreply@gmail.com',
             to: email,
             subject: 'Projet',
-            text: 'Votre projet a bien été ajouté! Félicitation',
-            html: '<h1>Hello from gmail email using API</h1>',
+            text: 'Votre projet a bien été ajouté sur GamiCode! Félicitations',
+            // html: '<h1>Gamicode</h1>',
         };
 
         const result = await transport.sendMail(mailOptions);
